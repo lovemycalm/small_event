@@ -12,7 +12,7 @@ import 'package:tapped/tapped.dart';
 
 void main() {
 //  runApp(MyApp());
-  Future.delayed(Duration(seconds: 1),(){
+  Future.delayed(Duration(seconds: 1), () {
     runApp(MyApp());
   });
 }
@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _refreshInfo();
   }
 
-  void _refreshInfo() async{
+  void _refreshInfo() async {
     taskInfoList = await DbHelper.getAllTask();
     setState(() {});
   }
@@ -109,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.cyan,
         onPressed: () {
           Router.pushByWidget(context, AddSignTask()).then((value) {
-            if(value!=null){
+            if (value != null) {
               _refreshInfo();
             }
           });
@@ -123,33 +123,39 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget buildTaskButton(TaskInfo taskInfo) {
     return Tapped(
       onTap: () {
-        DbHelper.addTaskSignRecord(SignTaskRecord.create(taskInfo.id));
-      },
-      onLongTap: (){
-        showDialog(context: context,builder:(_){
-          return AlertDialog(content: Text('确定要删除该打卡吗？'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('取消'),
-                onPressed: (){
-                  Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                child: Text('确定删除'),
-                onPressed: (){
-                  Navigator.of(context).pop();
-                  DbHelper.deleteTask(taskInfo.id).then((value) {
-                    Fluttertoast.showToast(msg: '删除成功！');
-                    setState(() {
-                      taskInfoList.remove(taskInfo);
-                    });
-                  });
-                },
-              )
-            ],
-          );
+        DbHelper.addTaskSignRecord(SignTaskRecord.create(taskInfo.id))
+            .then((value) {
+          Fluttertoast.showToast(msg: '打卡成功！');
         });
+      },
+      onLongTap: () {
+        showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                content: Text('确定要删除该打卡吗？'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('取消'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('确定删除'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      DbHelper.deleteTask(taskInfo.id).then((value) {
+                        Fluttertoast.showToast(msg: '删除成功！');
+                        setState(() {
+                          taskInfoList.remove(taskInfo);
+                        });
+                      });
+                    },
+                  )
+                ],
+              );
+            });
       },
       child: Container(
         alignment: Alignment.center,

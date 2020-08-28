@@ -41,16 +41,16 @@ class DbHelper {
     return Future.value(taskList);
   }
 
-  static void addTaskSignRecord(SignTaskRecord record) {
-    getDb().then((value) {
-      int signTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      value.insert(TABLE_TASK_RECORD_NAME,
-          {'taskId': record.taskId, 'signTime': signTime});
-    });
+  static Future addTaskSignRecord(SignTaskRecord record) async {
+    Database database = await getDb();
+    int signTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    database.insert(TABLE_TASK_RECORD_NAME,
+        {'taskId': record.taskId, 'signTime': signTime});
+    return Future.value(null);
   }
 
-  static Future deleteTask(int taskId) async{
-    Database database = await  getDb();
+  static Future deleteTask(int taskId) async {
+    Database database = await getDb();
     await database.transaction((txn) async {
       await txn.rawDelete('delete from $TABLE_TASK_NAME where id=$taskId');
       await txn.rawDelete(
