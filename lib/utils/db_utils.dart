@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:date_format/date_format.dart';
 import 'package:monthsign/models/task_info.dart';
+import 'package:monthsign/utils/log_util.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DbHelper {
@@ -44,6 +45,7 @@ class DbHelper {
   static Future addTaskSignRecord(SignTaskRecord record) async {
     Database database = await getDb();
     int signTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    // signTime -= 60 * 60 * 24;
     database.insert(TABLE_TASK_RECORD_NAME,
         {'taskId': record.taskId, 'signTime': signTime});
     return Future.value(null);
@@ -59,17 +61,29 @@ class DbHelper {
     return Future.value(Void);
   }
 
-  static Future<List<SignTaskRecord>> getAllTaskRecordInfo(int taskId) async {
+  static Future<List<SignTaskRecord>> getAllTaskRecordInfo(int taskId,
+      {int? startTime, int? endTime}) async {
     Database database = await getDb();
     String sql;
+
+    String dateCondition = '';
+    if (startTime != null) {
+      dateCondition += 'and $TABLE_TASK_RECORD_NAME.signTime>=$startTime';
+    }
+    if (endTime != null) {
+      dateCondition += 'and $TABLE_TASK_RECORD_NAME.signTime<$endTime';
+    }
+
+    Log.look("startTime:$startTime   dateCondition:$dateCondition");
+
     if (taskId != -1) {
       sql =
           'select $TABLE_TASK_RECORD_NAME.signTime,$TABLE_TASK_NAME.colorValue,$TABLE_TASK_NAME.taskName from $TABLE_TASK_RECORD_NAME '
-          'INNER JOIN $TABLE_TASK_NAME ON $TABLE_TASK_RECORD_NAME.taskId=$TABLE_TASK_NAME.id where $TABLE_TASK_RECORD_NAME.taskId=$taskId order by $TABLE_TASK_RECORD_NAME.signTime desc';
+          'INNER JOIN $TABLE_TASK_NAME ON $TABLE_TASK_RECORD_NAME.taskId=$TABLE_TASK_NAME.id where $TABLE_TASK_RECORD_NAME.taskId=$taskId $dateCondition order by $TABLE_TASK_RECORD_NAME.signTime desc';
     } else {
       sql =
           'select $TABLE_TASK_RECORD_NAME.signTime,$TABLE_TASK_NAME.colorValue,$TABLE_TASK_NAME.taskName from $TABLE_TASK_RECORD_NAME '
-          'INNER JOIN $TABLE_TASK_NAME ON $TABLE_TASK_RECORD_NAME.taskId=$TABLE_TASK_NAME.id order by $TABLE_TASK_RECORD_NAME.signTime desc';
+          'INNER JOIN $TABLE_TASK_NAME ON $TABLE_TASK_RECORD_NAME.taskId=$TABLE_TASK_NAME.id ${dateCondition.isNotEmpty ? 'where ${dateCondition.replaceFirst('and', '')}' : ''} order by $TABLE_TASK_RECORD_NAME.signTime desc';
     }
     print('sql:$sql');
     var query = await database.rawQuery(sql);

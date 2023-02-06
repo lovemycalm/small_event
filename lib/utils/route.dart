@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ARouter {
 
@@ -12,6 +13,10 @@ class ARouter {
     return Navigator.push(context, MaterialPageRoute(builder: (context) {
       return widget;
     }));
+  }
+
+  static void back(){
+    Get.back();
   }
 
 }

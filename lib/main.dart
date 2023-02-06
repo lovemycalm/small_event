@@ -1,40 +1,43 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:monthsign/models/task_info.dart';
 import 'package:monthsign/pages/add_sign_task.dart';
 import 'package:monthsign/pages/sign_record_page.dart';
 import 'package:monthsign/utils/db_utils.dart';
 import 'package:monthsign/utils/route.dart';
+import 'package:monthsign/widgets/common_widgets.dart';
 import 'package:tapped/tapped.dart';
 
 void main() {
 //  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark));
+      statusBarIconBrightness: Brightness.light));
 
   Future.delayed(Duration(seconds: 1), () {
     runApp(MyApp());
   });
-
 }
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: '小事记',
       theme: ThemeData(
-        primaryColor: Color(0xff1e1e1e),
-        primarySwatch: Colors.blue,
-        buttonColor: Color(0xff1e1e1e),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+          primaryColor: Color(0xff1e1e1e),
+          primarySwatch: Colors.blue,
+          buttonColor: Color(0xff1e1e1e),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          appBarTheme: AppBarTheme(
+              backgroundColor: Color(0xff1e1e1e),
+              backwardsCompatibility: false,
+              systemOverlayStyle: SystemUiOverlayStyle.light)),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -95,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //      ),
 //    )
 
-    return Scaffold(
+    var mainWidget = Scaffold(
       appBar: AppBar(
         title: Text('小事记'),
         actions: <Widget>[
@@ -103,7 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.storage),
             onPressed: () {
               ARouter.pushByWidget(context, SignRecordPage());
-//            DbHelper.test();
             },
           )
         ],
@@ -125,6 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+
+    return mainWidget;
   }
 
   Widget buildTaskButton(TaskInfo taskInfo) {
@@ -168,19 +172,25 @@ class _MyHomePageState extends State<MyHomePage> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
             shape: BoxShape.circle, color: Color(taskInfo.colorValue!)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Stack(
           children: <Widget>[
-            Text(
-              taskInfo.taskName!,
-              style: TextStyle(fontSize: 25, color: Colors.white),
+            Center(
+              child: Text(
+                taskInfo.taskName!,
+                style: TextStyle(fontSize: 25, color: Colors.white),
+              ),
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 5),
-            ),
-            Text(
-              '打卡',
-              style: TextStyle(fontSize: 14, color: Colors.white),
+            Positioned(
+              child: Align(
+                child:
+                Text(
+                  '点击记录一下',
+                  style: TextStyle(fontSize: 12, color: Colors.white),
+                ),
+                alignment: Alignment.bottomCenter,
+              ),
+              bottom: 15,
+              left: 0,right: 0,
             )
           ],
         ),

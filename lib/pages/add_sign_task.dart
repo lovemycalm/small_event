@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:monthsign/models/task_info.dart';
 import 'package:monthsign/utils/db_utils.dart';
 import 'package:monthsign/utils/mock_data_test.dart';
+import 'package:monthsign/widgets/common_widgets.dart';
+import 'package:monthsign/widgets/title_bar.dart';
 
 class AddSignTask extends StatefulWidget {
   @override
@@ -82,7 +85,13 @@ class _AddSignTaskState extends State<AddSignTask> {
     return Scaffold(
       appBar: AppBar(
         title: Text('添加打卡任务'),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        backwardsCompatibility: false,
       ),
+      // appBar: TitleBar(
+      //   title: '添加打卡任务',
+      //   overlayStyle: SystemUiOverlayStyle.dark,
+      // ),
       body: SingleChildScrollView(
         child: Container(
             padding: EdgeInsets.all(15),
@@ -193,7 +202,7 @@ class _AddSignTaskState extends State<AddSignTask> {
                       Navigator.pop(context, 'success');
                     },
                   ),
-                )
+                ),
               ],
             )),
       ),
