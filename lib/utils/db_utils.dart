@@ -34,9 +34,9 @@ class DbHelper {
     List<TaskInfo> taskList = [];
     query.forEach((element) {
       taskList.add(TaskInfo()
-        ..id = element['id']
-        ..colorValue = element['colorValue']
-        ..taskName = element['taskName']);
+        ..id = element['id']! as int
+        ..colorValue = element['colorValue']! as int
+        ..taskName = element['taskName']! as String);
     });
     return Future.value(taskList);
   }
@@ -76,9 +76,9 @@ class DbHelper {
     List<SignTaskRecord> taskList = [];
     query.forEach((element) {
       taskList.add(SignTaskRecord()
-        ..colorValue = element['colorValue']
-        ..taskName = element['taskName']
-        ..signTime = element['signTime']);
+        ..colorValue = element['colorValue']! as int
+        ..taskName = element['taskName']! as String
+        ..signTime = element['signTime']! as int);
     });
     return Future.value(taskList);
   }

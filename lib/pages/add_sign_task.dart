@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:monthsign/models/task_info.dart';
-import 'package:monthsign/pages/sign_record_page.dart';
 import 'package:monthsign/utils/db_utils.dart';
 import 'package:monthsign/utils/mock_data_test.dart';
-import 'package:monthsign/utils/route.dart';
 
 class AddSignTask extends StatefulWidget {
   @override
@@ -14,7 +12,7 @@ class AddSignTask extends StatefulWidget {
 }
 
 class _AddSignTaskState extends State<AddSignTask> {
-  Color taskColor;
+  Color? taskColor;
 
 //  TimeOfDay startTime;
 //  TimeOfDay endTime;
@@ -30,7 +28,7 @@ class _AddSignTaskState extends State<AddSignTask> {
 
   @override
   Widget build(BuildContext context) {
-    Function chooseColor = () {
+    GestureTapCallback chooseColor = () {
       showGeneralDialog(
           context: context,
           barrierDismissible: true,
@@ -40,7 +38,7 @@ class _AddSignTaskState extends State<AddSignTask> {
           transitionDuration: const Duration(milliseconds: 150),
           pageBuilder: (BuildContext context, Animation<double> animation,
               Animation<double> secondaryAnimation) {
-            Color tmpColor;
+            Color? tmpColor;
             return Center(
               child: Container(
                 padding: EdgeInsets.all(15),
@@ -52,7 +50,8 @@ class _AddSignTaskState extends State<AddSignTask> {
                   children: <Widget>[
                     CircleColorPicker(
                       size: Size(250, 250),
-                      initialColor: taskColor,
+                      controller:
+                          CircleColorPickerController(initialColor: taskColor!),
                       onChanged: (c) {
                         tmpColor = c;
                       },
@@ -189,9 +188,9 @@ class _AddSignTaskState extends State<AddSignTask> {
                     onPressed: () async {
                       await DbHelper.addTaskInfo(TaskInfo()
                         ..taskName = taskNameController.text
-                        ..colorValue = taskColor.value);
+                        ..colorValue = taskColor!.value);
                       Fluttertoast.showToast(msg: '添加成功');
-                      Navigator.pop(context,'success');
+                      Navigator.pop(context, 'success');
                     },
                   ),
                 )

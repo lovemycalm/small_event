@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:monthsign/models/task_info.dart';
 import 'package:monthsign/utils/db_utils.dart';
-import 'package:monthsign/utils/mock_data_test.dart';
 
 class SignRecordPage extends StatefulWidget {
   @override
@@ -46,14 +45,14 @@ class _SignRecordPageState extends State<SignRecordPage> {
       actions.add(PopupMenuButton(
         onSelected: (v){
           print("v:$v");
-          curChosenId=v;
+          curChosenId=v! as int;
           _getRecordList();
         },
         itemBuilder: (_){
           return taskInfoList.map((e){
            return PopupMenuItem(
               value: e.id,
-              child: Text(e.taskName),
+              child: Text(e.taskName!),
             );
           }).toList()..add(PopupMenuItem(
             value: -1,
@@ -78,18 +77,18 @@ class _SignRecordPageState extends State<SignRecordPage> {
                   width: 20,
                   height: 20,
                   decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: Color(recordList[i].colorValue)),
+                      shape: BoxShape.circle, color: Color(recordList[i].colorValue!)),
                 ),
                 Expanded(
                   flex: 1,
                   child: Padding(
                     padding: EdgeInsets.only(left: 10),
-                    child: Text(recordList[i].taskName),
+                    child: Text(recordList[i].taskName!),
                   ),
                 ),
                 Text(formatDate(
                     DateTime.fromMillisecondsSinceEpoch(
-                        recordList[i].signTime * 1000),
+                        recordList[i].signTime! * 1000),
                     [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss])),
               ],
             ),

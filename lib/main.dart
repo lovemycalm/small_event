@@ -1,7 +1,7 @@
-import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:monthsign/models/task_info.dart';
 import 'package:monthsign/pages/add_sign_task.dart';
@@ -12,16 +12,23 @@ import 'package:tapped/tapped.dart';
 
 void main() {
 //  runApp(MyApp());
+
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark));
+
   Future.delayed(Duration(seconds: 1), () {
     runApp(MyApp());
   });
+
 }
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '月月打卡',
+      title: '小事记',
       theme: ThemeData(
         primaryColor: Color(0xff1e1e1e),
         primarySwatch: Colors.blue,
@@ -34,7 +41,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -90,12 +97,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('月月打卡'),
+        title: Text('小事记'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.storage),
             onPressed: () {
-              Router.pushByWidget(context, SignRecordPage());
+              ARouter.pushByWidget(context, SignRecordPage());
 //            DbHelper.test();
             },
           )
@@ -108,13 +115,13 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.cyan,
         onPressed: () {
-          Router.pushByWidget(context, AddSignTask()).then((value) {
+          ARouter.pushByWidget(context, AddSignTask()).then((value) {
             if (value != null) {
               _refreshInfo();
             }
           });
         },
-        tooltip: '添加打卡任务',
+        tooltip: '添加小事',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
@@ -123,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget buildTaskButton(TaskInfo taskInfo) {
     return Tapped(
       onTap: () {
-        DbHelper.addTaskSignRecord(SignTaskRecord.create(taskInfo.id))
+        DbHelper.addTaskSignRecord(SignTaskRecord.create(taskInfo.id!))
             .then((value) {
           Fluttertoast.showToast(msg: '打卡成功！');
         });
@@ -145,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text('确定删除'),
                     onPressed: () {
                       Navigator.of(context).pop();
-                      DbHelper.deleteTask(taskInfo.id).then((value) {
+                      DbHelper.deleteTask(taskInfo.id!).then((value) {
                         Fluttertoast.showToast(msg: '删除成功！');
                         setState(() {
                           taskInfoList.remove(taskInfo);
@@ -160,12 +167,12 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            shape: BoxShape.circle, color: Color(taskInfo.colorValue)),
+            shape: BoxShape.circle, color: Color(taskInfo.colorValue!)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              taskInfo.taskName,
+              taskInfo.taskName!,
               style: TextStyle(fontSize: 25, color: Colors.white),
             ),
             Padding(
