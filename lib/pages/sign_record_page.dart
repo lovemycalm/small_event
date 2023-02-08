@@ -7,6 +7,11 @@ import 'package:monthsign/utils/log_util.dart';
 import 'package:monthsign/utils/widget_creator.dart';
 
 class SignRecordPage extends StatefulWidget {
+
+  final int eventId;
+
+  const SignRecordPage({Key? key, this.eventId=-1}) : super(key: key);
+
   @override
   _SignRecordPageState createState() => _SignRecordPageState();
 }
@@ -18,6 +23,8 @@ class _SignRecordPageState extends State<SignRecordPage> {
   @override
   void initState() {
     super.initState();
+
+    curChosenId=widget.eventId;
 
     print(DateTime.now().millisecondsSinceEpoch ~/ 1000);
 
@@ -42,7 +49,7 @@ class _SignRecordPageState extends State<SignRecordPage> {
     });
   }
 
-  int curChosenId = -1;
+  late int curChosenId;
 
   void _getTaskInfo() async {
     taskInfoList = await DbHelper.getAllTask();
@@ -54,31 +61,10 @@ class _SignRecordPageState extends State<SignRecordPage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> actions = [];
-    // if (taskInfoList.isNotEmpty) {
-    //   actions.add(PopupMenuButton(
-    //     onSelected: (v) {
-    //       print("v:$v");
-    //       curChosenId = v! as int;
-    //       _getRecordList();
-    //     },
-    //     itemBuilder: (_) {
-    //       return taskInfoList.map((e) {
-    //         return PopupMenuItem(
-    //           value: e.id,
-    //           child: Text(e.taskName!),
-    //         );
-    //       }).toList()
-    //         ..add(PopupMenuItem(
-    //           value: -1,
-    //           child: Text('全部打卡'),
-    //         ));
-    //     },
-    //   ));
-    // }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('打卡记录'),
+        title: Text('打卡记录(${taskInfoList.length})'),
         actions: actions,
       ),
       body: Column(
