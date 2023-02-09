@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:monthsign/models/task_info.dart';
 import 'package:monthsign/utils/db_utils.dart';
-import 'package:monthsign/utils/log_util.dart';
 import 'package:monthsign/utils/widget_creator.dart';
 
 class SignRecordPage extends StatefulWidget {
@@ -64,7 +63,7 @@ class _SignRecordPageState extends State<SignRecordPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('打卡记录(${taskInfoList.length})'),
+        title: Text('打卡记录(${recordList.length})'),
         actions: actions,
       ),
       body: Column(
